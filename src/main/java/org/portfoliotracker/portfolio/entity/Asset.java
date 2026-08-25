@@ -1,9 +1,6 @@
 package org.portfoliotracker.portfolio.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,8 +15,11 @@ public class Asset {
     private Long assetId;
     private String name;
     private String ticker;
+    @Column(name = "asset_type")
     private String assetType;
     private String source;
+    @Column(name = "created_at")
+
     private LocalDateTime createdAt;
 }
 

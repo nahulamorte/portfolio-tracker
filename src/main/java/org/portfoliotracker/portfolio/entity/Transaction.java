@@ -17,15 +17,17 @@ public class Transaction {
 
     private BigDecimal quantity;
     private BigDecimal price;
-    private Character transactionType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "transaction_type")
+    private TransactionType transactionType; //BUY, SELL
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "id_portfolio", nullable = false)
     private Portfolio portfolio;
-
     @ManyToOne
     private Asset asset;
 
-    @ManyToOne
-    private UserApp user;
 }
