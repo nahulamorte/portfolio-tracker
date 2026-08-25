@@ -1,9 +1,11 @@
 services:
   postgres:
-    image: 'postgres:latest'
+    image: postgres:16
+    container_name: portfolio-db
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      POSTGRES_DB: portfolio_tracker
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - '5432'
+      - "5432:5432"
+    restart: unless-stopped
