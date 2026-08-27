@@ -29,5 +29,4 @@ public class Transaction {
     private Portfolio portfolio;
     @ManyToOne
     private Asset asset;
-
 }

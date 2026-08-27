@@ -1,15 +1,12 @@
 package org.portfoliotracker.portfolio.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity @Getter @Setter @AllArgsConstructor @NoArgsConstructor
+@Entity @Getter @Setter @AllArgsConstructor @NoArgsConstructor @RequiredArgsConstructor
 public class UserApp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,4 +18,9 @@ public class UserApp {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    public UserApp(String name, LocalDate dateBirth) {
+        this.name = name;
+        this.dateBirth = dateBirth;
+        this.createdAt = LocalDateTime.now();
+    }
 }
