@@ -2,13 +2,16 @@ package org.portfoliotracker.portfolio.auth;
 
 import jakarta.transaction.Transactional;
 import lombok.Builder;
+import org.portfoliotracker.portfolio.auth.exception.EmailAlreadyExistsException;
+import org.portfoliotracker.portfolio.auth.exception.UsernameAlreadyExistsException;
 import org.portfoliotracker.portfolio.dto.request.LoginRequestDTO;
 import org.portfoliotracker.portfolio.dto.request.RegisterRequestDTO;
 import org.portfoliotracker.portfolio.dto.response.LoginResponseDTO;
 import org.portfoliotracker.portfolio.dto.response.RegisterResponseDTO;
 import org.portfoliotracker.portfolio.entity.Portfolio;
 import org.portfoliotracker.portfolio.entity.UserApp;
-import org.portfoliotracker.portfolio.repository.UserAuthRepository;
+import org.portfoliotracker.portfolio.repository.PortfolioRepository;
+import org.portfoliotracker.portfolio.repository.UserAppRepository;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
