@@ -1,11 +1,9 @@
-package org.portfoliotracker.portfolio.controller;
+package org.portfoliotracker.portfolio.auth;
 
 import org.portfoliotracker.portfolio.dto.request.LoginRequestDTO;
 import org.portfoliotracker.portfolio.dto.request.RegisterRequestDTO;
 import org.portfoliotracker.portfolio.dto.response.LoginResponseDTO;
 import org.portfoliotracker.portfolio.dto.response.RegisterResponseDTO;
-import org.portfoliotracker.portfolio.service.AuthService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +25,7 @@ public class UserAuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request){
-        LoginRequestDTO response = authService.login(request);
+        LoginResponseDTO response = authService.login(request);
         return ResponseEntity.ok(response);
     }
 }

@@ -1,7 +1,8 @@
-package org.portfoliotracker.portfolio.entity;
+package org.portfoliotracker.portfolio.auth;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.portfoliotracker.portfolio.entity.UserApp;
 
 @Entity @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class UserAuth {

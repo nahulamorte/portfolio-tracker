@@ -1,20 +1,21 @@
-package org.portfoliotracker.portfolio.service;
+package org.portfoliotracker.portfolio.auth;
 
 import jakarta.transaction.Transactional;
-import org.portfoliotracker.portfolio.auth.JwtService;
+import lombok.Builder;
 import org.portfoliotracker.portfolio.dto.request.LoginRequestDTO;
 import org.portfoliotracker.portfolio.dto.request.RegisterRequestDTO;
 import org.portfoliotracker.portfolio.dto.response.LoginResponseDTO;
 import org.portfoliotracker.portfolio.dto.response.RegisterResponseDTO;
 import org.portfoliotracker.portfolio.entity.Portfolio;
 import org.portfoliotracker.portfolio.entity.UserApp;
-import org.portfoliotracker.portfolio.entity.UserAuth;
+import org.portfoliotracker.portfolio.repository.UserAuthRepository;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
+@Builder
 @Service
 public class AuthService {
     private final UserAppRepository userAppRepository;
@@ -45,25 +46,32 @@ public class AuthService {
             throw new EmailAlreadyExistsException(request.email());
         }
 
-        // Paso 1: UserApp primero, necesita existir para tener ID
-        UserApp userApp = new UserApp(request.name(), request.dateBirth());
+        UserApp userApp = UserApp.builder()
+                .name(request.name())
+                .dateBirth(request.dateBirth())
+                .build();
         userApp = userAppRepository.save(userApp);
 
         // Paso 2: UserAuth, ahora sí puede referenciar el UserApp ya persistido
-        UserAuth userAuth = new UserAuth();
-        userAuth.setUserApp(userApp);
-        userAuth.setUsername(request.username());
-        userAuth.setEmail(request.email());
-        userAuth.setPasswordHash(passwordEncoder.encode(request.password()));
+        UserAuth userAuth = UserAuth.builder()
+                .userApp(userApp)
+                .username(request.username())
+                .email(request.email())
+                .passwordHash(passwordEncoder.encode((request.password())))
+                .build();
         userAuthRepository.save(userAuth);
 
-        // Paso 3: Portfolio inicial, balance 0, mismo UserApp
-        Portfolio portfolio = new Portfolio(userApp, BigDecimal.ZERO);
+        Portfolio portfolio = Portfolio.builder()
+                .user(userApp)
+                .balance(BigDecimal.ZERO)
+                .build();
         portfolioRepository.save(portfolio);
 
         String token = jwtService.generateToken(userAuth.getUsername());
         return new RegisterResponseDTO(userAuth.getUsername(), token);
     }
+
+
 
     public LoginResponseDTO login(LoginRequestDTO request){
         UserAuth userAuth = userAuthRepository.findByUsername(request.username())
