@@ -6,7 +6,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity @Getter @Setter @AllArgsConstructor @NoArgsConstructor @RequiredArgsConstructor
+@Entity @Getter @Setter @AllArgsConstructor @NoArgsConstructor @RequiredArgsConstructor @Builder
 public class UserApp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,10 +17,4 @@ public class UserApp {
     private LocalDate dateBirth;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-
-    public UserApp(String name, LocalDate dateBirth) {
-        this.name = name;
-        this.dateBirth = dateBirth;
-        this.createdAt = LocalDateTime.now();
-    }
 }

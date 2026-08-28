@@ -1,15 +1,12 @@
 package org.portfoliotracker.portfolio.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity @Getter @Setter @AllArgsConstructor @NoArgsConstructor
+@Entity @Getter @Setter @AllArgsConstructor @NoArgsConstructor @Builder
 public class Portfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
