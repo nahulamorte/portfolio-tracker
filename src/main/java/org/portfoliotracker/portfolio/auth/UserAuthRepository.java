@@ -2,6 +2,8 @@ package org.portfoliotracker.portfolio.auth;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface UserAuthRepository extends JpaRepository<UserAuth, Long> {
     UserAuth save(UserAuth userAuth);
 
@@ -9,5 +11,5 @@ public interface UserAuthRepository extends JpaRepository<UserAuth, Long> {
 
     boolean existsByEmail(String email);
 
-    UserAuth findByUsername(String username);
+    Optional<UserAuth> findByUsername(String username);
 }

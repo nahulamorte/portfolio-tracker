@@ -55,7 +55,6 @@ public class AuthService {
                 .build();
         userApp = userAppRepository.save(userApp);
 
-        // Paso 2: UserAuth, ahora sí puede referenciar el UserApp ya persistido
         UserAuth userAuth = UserAuth.builder()
                 .userApp(userApp)
                 .username(request.username())

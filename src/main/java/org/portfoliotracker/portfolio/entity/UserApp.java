@@ -6,7 +6,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity @Getter @Setter @AllArgsConstructor @NoArgsConstructor @RequiredArgsConstructor @Builder
+@Entity @Getter @Setter @AllArgsConstructor @NoArgsConstructor  @Builder
 public class UserApp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
