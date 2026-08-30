@@ -3,11 +3,15 @@ spring:
     name: portfolio-tracker
   datasource:
     url: jdbc:postgresql://localhost:5432/portfolio_tracker
-    username: postgres
-    password: admin
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
     show-sql: true
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration-ms: 86400000
