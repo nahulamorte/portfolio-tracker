@@ -1,21 +1,28 @@
 package org.portfoliotracker.portfolio.exception;
 
+import com.nimbusds.jwt.proc.ExpiredJWTException;
+import io.jsonwebtoken.MalformedJwtException;
 import org.portfoliotracker.portfolio.auth.exception.EmailAlreadyExistsException;
 import org.portfoliotracker.portfolio.auth.exception.UsernameAlreadyExistsException;
 import org.portfoliotracker.portfolio.dto.response.ErrorResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.ErrorResponse;
+import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.nio.file.AccessDeniedException;
+import java.security.SignatureException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    //Generic error --> Internal Server 500
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleGenericException(RuntimeException exc){
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -28,6 +35,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, status);
     }
 
+    //Jwt - Auth flow errors
     @ExceptionHandler(UsernameAlreadyExistsException.class)
     public ResponseEntity<ErrorResponseDTO> handleUsernameExists(UsernameAlreadyExistsException exc){
         HttpStatus status = HttpStatus.CONFLICT;
@@ -43,6 +51,78 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ErrorResponseDTO> handleEmailExists(EmailAlreadyExistsException exc){
         HttpStatus status = HttpStatus.CONFLICT;
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                status.value(),
+                status.getReasonPhrase(),
+                exc.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(error, status);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponseDTO> handleBadCredentials(BadCredentialsException exc){
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                status.value(),
+                status.getReasonPhrase(),
+                exc.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(error, status);
+    }
+
+    @ExceptionHandler(ExpiredJWTException.class)
+    public ResponseEntity<ErrorResponseDTO> handleExpiredJwt(ExpiredJWTException exc) {
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                status.value(),
+                status.getReasonPhrase(),
+                exc.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(error, status);
+    }
+
+    @ExceptionHandler(SignatureException.class)
+    public ResponseEntity<ErrorResponseDTO> handleSignature(SignatureException exc){
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                status.value(),
+                status.getReasonPhrase(),
+                exc.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(error,status);
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    public ResponseEntity<ErrorResponseDTO> handleMalFormedJwt(MalformedJwtException exc){
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                status.value(),
+                status.getReasonPhrase(),
+                exc.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(error, status);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponseDTO> handleAccessDenied(AccessDeniedException exc){
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                status.value(),
+                status.getReasonPhrase(),
+                exc.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(error, status);
+    }
+
+    @ExceptionHandler(HttpMediaTypeException.class)
+    public ResponseEntity<ErrorResponseDTO> handleHttpMediaType(HttpMediaTypeException exc){
+        HttpStatus status = HttpStatus.UNSUPPORTED_MEDIA_TYPE;
         ErrorResponseDTO error = new ErrorResponseDTO(
                 status.value(),
                 status.getReasonPhrase(),

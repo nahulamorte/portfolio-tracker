@@ -1,28 +1,40 @@
 package org.portfoliotracker.portfolio.auth;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.portfoliotracker.portfolio.dto.response.ErrorResponseDTO;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import io.jsonwebtoken.security.SignatureException;
+import java.time.LocalDateTime;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
+    private final ObjectMapper objectMapper;
 
-    public JwtAuthenticationFilter(JwtService jwtService, CustomUserDetailsService userDetailsService) {
+
+    public JwtAuthenticationFilter(JwtService jwtService, CustomUserDetailsService userDetailsService, ObjectMapper objectMapper) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -33,25 +45,51 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response); // no hay token, sigue sin autenticar
+            filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authHeader.substring(7); // saca "Bearer "
-        String username = jwtService.extractUsername(token);
+        String token = authHeader.substring(7);
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        try {
+            String username = jwtService.extractUsername(token);
 
-            if (jwtService.isTokenValid(token, userDetails.getUsername())) {
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+                if (jwtService.isTokenValid(token, userDetails.getUsername())) {
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails, null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
-        }
 
-        filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
+
+        } catch (ExpiredJwtException ex) {
+            writeErrorResponse(response, HttpStatus.UNAUTHORIZED, "El token expiró, iniciá sesión de nuevo");
+        } catch (MalformedJwtException | SignatureException | UnsupportedJwtException ex) {
+            writeErrorResponse(response, HttpStatus.UNAUTHORIZED, "Token inválido");
+        } catch (UsernameNotFoundException ex) {
+            writeErrorResponse(response, HttpStatus.UNAUTHORIZED, "Token inválido");
+        }
+    }
+
+    private void writeErrorResponse(HttpServletResponse response, HttpStatus status, String message)
+            throws IOException {
+
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                status.value(),
+                status.getReasonPhrase(),
+                message,
+                LocalDateTime.now()
+        );
+
+        response.setStatus(status.value());
+        response.setContentType("application/json");
+        response.getWriter().write(objectMapper.writeValueAsString(error));
     }
 }
+
