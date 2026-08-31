@@ -10,6 +10,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.portfoliotracker.portfolio.dto.response.ErrorResponseDTO;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -29,12 +31,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
     private final ObjectMapper objectMapper;
+    private final HandlerExceptionResolver handlerExceptionResolver;
 
 
-    public JwtAuthenticationFilter(JwtService jwtService, CustomUserDetailsService userDetailsService, ObjectMapper objectMapper) {
+    public JwtAuthenticationFilter(JwtService jwtService, CustomUserDetailsService userDetailsService, ObjectMapper objectMapper, @Qualifier("handlerExceptionResolver") HandlerExceptionResolver handlerExceptionResolver) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
         this.objectMapper = objectMapper;
+        this.handlerExceptionResolver = handlerExceptionResolver;
     }
 
     @Override
@@ -70,10 +74,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         } catch (ExpiredJwtException ex) {
             writeErrorResponse(response, HttpStatus.UNAUTHORIZED, "El token expiró, iniciá sesión de nuevo");
-        } catch (MalformedJwtException | SignatureException | UnsupportedJwtException ex) {
+        } catch (MalformedJwtException |  UnsupportedJwtException ex) {
             writeErrorResponse(response, HttpStatus.UNAUTHORIZED, "Token inválido");
         } catch (UsernameNotFoundException ex) {
             writeErrorResponse(response, HttpStatus.UNAUTHORIZED, "Token inválido");
+        } catch (SignatureException ex) {
+            writeErrorResponse(response, HttpStatus.UNAUTHORIZED, "Firma inválida");
         }
     }
 

@@ -4,7 +4,10 @@ import org.portfoliotracker.portfolio.dto.request.LoginRequestDTO;
 import org.portfoliotracker.portfolio.dto.request.RegisterRequestDTO;
 import org.portfoliotracker.portfolio.dto.response.LoginResponseDTO;
 import org.portfoliotracker.portfolio.dto.response.RegisterResponseDTO;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,5 +30,10 @@ public class UserAuthController {
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request){
         LoginResponseDTO response = authService.login(request);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<String> me(@AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok("Autenticado como: " + userDetails.getUsername());
     }
 }

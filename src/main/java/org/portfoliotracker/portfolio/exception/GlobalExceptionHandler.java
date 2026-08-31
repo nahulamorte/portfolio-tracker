@@ -1,7 +1,8 @@
 package org.portfoliotracker.portfolio.exception;
 
-import com.nimbusds.jwt.proc.ExpiredJWTException;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import org.portfoliotracker.portfolio.auth.exception.EmailAlreadyExistsException;
 import org.portfoliotracker.portfolio.auth.exception.UsernameAlreadyExistsException;
 import org.portfoliotracker.portfolio.dto.response.ErrorResponseDTO;
@@ -72,8 +73,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, status);
     }
 
-    @ExceptionHandler(ExpiredJWTException.class)
-    public ResponseEntity<ErrorResponseDTO> handleExpiredJwt(ExpiredJWTException exc) {
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorResponseDTO> handleExpiredJwt(ExpiredJwtException exc) {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         ErrorResponseDTO error = new ErrorResponseDTO(
                 status.value(),
@@ -84,29 +85,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, status);
     }
 
-    @ExceptionHandler(SignatureException.class)
-    public ResponseEntity<ErrorResponseDTO> handleSignature(SignatureException exc){
-        HttpStatus status = HttpStatus.UNAUTHORIZED;
-        ErrorResponseDTO error = new ErrorResponseDTO(
-                status.value(),
-                status.getReasonPhrase(),
-                exc.getMessage(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(error,status);
-    }
-
-    @ExceptionHandler(MalformedJwtException.class)
-    public ResponseEntity<ErrorResponseDTO> handleMalFormedJwt(MalformedJwtException exc){
-        HttpStatus status = HttpStatus.UNAUTHORIZED;
-        ErrorResponseDTO error = new ErrorResponseDTO(
-                status.value(),
-                status.getReasonPhrase(),
-                exc.getMessage(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(error, status);
-    }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponseDTO> handleAccessDenied(AccessDeniedException exc){
@@ -117,6 +95,15 @@ public class GlobalExceptionHandler {
                 exc.getMessage(),
                 LocalDateTime.now()
         );
+        return new ResponseEntity<>(error, status);
+    }
+
+    @ExceptionHandler({MalformedJwtException.class, SignatureException.class, UnsupportedJwtException.class})
+    public ResponseEntity<ErrorResponseDTO> handleInvalidJwt(Exception exc) {
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                status.value(), status.getReasonPhrase(),
+                "Token inválido", LocalDateTime.now());
         return new ResponseEntity<>(error, status);
     }
 
