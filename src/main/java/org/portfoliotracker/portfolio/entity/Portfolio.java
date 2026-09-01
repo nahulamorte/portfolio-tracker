@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class Portfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_portfolio")
     private Long portfolioId;
     private BigDecimal balance;
 
@@ -18,4 +19,11 @@ public class Portfolio {
     private UserApp user;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

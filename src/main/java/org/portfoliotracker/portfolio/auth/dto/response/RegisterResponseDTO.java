@@ -1,4 +1,4 @@
-package org.portfoliotracker.portfolio.dto.response;
+package org.portfoliotracker.portfolio.auth.dto.response;
 
 public record RegisterResponseDTO(
         String username,

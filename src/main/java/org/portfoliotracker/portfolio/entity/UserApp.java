@@ -7,9 +7,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity @Getter @Setter @AllArgsConstructor @NoArgsConstructor  @Builder
+@Table(name = "app_user")
 public class UserApp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_user")
     private Long userId;
     private String name;
 
@@ -17,4 +19,11 @@ public class UserApp {
     private LocalDate dateBirth;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

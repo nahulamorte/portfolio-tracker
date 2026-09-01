@@ -1,6 +1,4 @@
-package org.portfoliotracker.portfolio.dto.response;
-
-import lombok.Builder;
+package org.portfoliotracker.portfolio.exception;
 
 import java.time.LocalDateTime;
 

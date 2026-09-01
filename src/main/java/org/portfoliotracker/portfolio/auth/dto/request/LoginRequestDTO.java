@@ -1,4 +1,4 @@
-package org.portfoliotracker.portfolio.dto.request;
+package org.portfoliotracker.portfolio.auth.dto.request;
 import jakarta.validation.constraints.*;
 
 public record LoginRequestDTO(

@@ -8,15 +8,25 @@ import java.time.LocalDateTime;
 @Entity @Getter @Setter @AllArgsConstructor @NoArgsConstructor @Builder
 public class Asset {
     @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_asset")
     private Long assetId;
     private String name;
     private String ticker;
     @Column(name = "asset_type")
     private String assetType;
+    @Column(name = "external_source")
     private String source;
     @Column(name = "created_at")
-
     private LocalDateTime createdAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+
 }
 
