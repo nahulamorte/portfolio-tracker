@@ -17,6 +17,8 @@ public class Portfolio {
     @OneToOne
     @JoinColumn(name = "id_user", unique = true, nullable = false)
     private UserApp user;
+
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")

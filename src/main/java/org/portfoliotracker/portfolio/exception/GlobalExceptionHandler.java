@@ -126,5 +126,19 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
+    //Exception of entities
+    //Portfolio:
+    @ExceptionHandler(PortfolioNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handlePortfolioNotFound(PortfolioNotFoundException exc){
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                status.value(),
+                status.getReasonPhrase(),
+                exc.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(error, status);
+    }
+
 
 }
