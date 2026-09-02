@@ -32,4 +32,9 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(name = "id_asset", nullable = false)
     private Asset asset;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 }
