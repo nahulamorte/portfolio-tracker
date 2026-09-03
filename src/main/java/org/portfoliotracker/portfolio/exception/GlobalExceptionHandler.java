@@ -140,5 +140,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, status);
     }
 
+    //Asset:
+    @ExceptionHandler(AssetNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleAssetNotFound(AssetNotFoundException exc){
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                status.value(),
+                status.getReasonPhrase(),
+                exc.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(error, status);
+    }
+
 
 }

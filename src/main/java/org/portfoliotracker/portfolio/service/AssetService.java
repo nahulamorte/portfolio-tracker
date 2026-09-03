@@ -6,6 +6,9 @@ import org.portfoliotracker.portfolio.exception.PortfolioNotFoundException;
 import org.portfoliotracker.portfolio.repository.AssetRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class AssetService {
     private AssetRepository assetRepository;
@@ -30,10 +33,19 @@ public class AssetService {
         return response;
     }
 
-    //Post
-
-
-    //Delete
+    public List<AssetResponseDTO> getAllAssets(){
+        List<AssetResponseDTO> responses = new ArrayList<>();
+        List<Asset> assets = assetRepository.findAll();
+        for (Asset asset : assets){
+            AssetResponseDTO response = new AssetResponseDTO(
+                    asset.getName(),
+                    asset.getTicker(),
+                    asset.getAssetType()
+            );
+            responses.add(response);
+        }
+        return responses;
+    }
 
 
 

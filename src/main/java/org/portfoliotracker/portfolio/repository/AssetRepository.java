@@ -15,11 +15,5 @@ public interface AssetRepository extends JpaRepository<Asset, Long> {
 
     Optional<Asset> findByTicker(String ticker);
 
-    Optional<List<Asset>> findAllByTicker(String ticker);
-
-    Asset save(Asset asset);
-
-    void delete(Asset entity);
-
-    void deleteById(Long assetId);
+    List<Asset> findAll();
 }

@@ -6,6 +6,8 @@ import org.portfoliotracker.portfolio.service.AssetService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("v1/api/asset")
 public class AssetController {
@@ -21,6 +23,12 @@ public class AssetController {
         return ResponseEntity.ok(response);
     }
 
-
+    @GetMapping
+    public ResponseEntity<List<AssetResponseDTO>> getAllAssets(){
+        List<AssetResponseDTO> response = assetService.getAllAssets();
+        return ResponseEntity.ok(response);
     }
+
+
+
 }
