@@ -153,10 +153,22 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, status);
     }
 
+    @ExceptionHandler(AssetTypeRequiredException.class)
+    public ResponseEntity<ErrorResponseDTO> handleAssetTypeRequired(AssetTypeRequiredException exc){
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                status.value(),
+                status.getReasonPhrase(),
+                exc.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(error, status);
+    }
+
     //Transaction:
     @ExceptionHandler(InsufficientAssetQuantityException.class)
     public ResponseEntity<ErrorResponseDTO> handleInsufficientAssetQuantity(InsufficientAssetQuantityException exc){
-        HttpStatus status = HttpStatus.NOT_FOUND;
+        HttpStatus status = HttpStatus.UNPROCESSABLE_CONTENT;
         ErrorResponseDTO error = new ErrorResponseDTO(
                 status.value(),
                 status.getReasonPhrase(),

@@ -16,4 +16,6 @@ public interface AssetRepository extends JpaRepository<Asset, Long> {
     Optional<Asset> findByTicker(String ticker);
 
     List<Asset> findAll();
+
+    Asset save(Asset asset);
 }
