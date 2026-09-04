@@ -14,11 +14,12 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
     Portfolio save(Portfolio portfolio);
 
     @Query("""
-        SELECT p
-        FROM Portfolio  p
-        JOIN UserAuth ua ON p.user.userId = ua.idUser
-        WHERE ua.username = :username 
-    """)
+    SELECT p
+    FROM Portfolio p
+    WHERE p.user.userId = (
+        SELECT ua.idUser FROM UserAuth ua WHERE ua.username = :username
+    )
+""")
     Optional<Portfolio> findByUsername(@Param("username") String username);
 
 
