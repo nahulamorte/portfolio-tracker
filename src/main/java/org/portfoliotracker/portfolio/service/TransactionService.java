@@ -16,6 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class TransactionService {
@@ -72,5 +74,27 @@ public class TransactionService {
                 saved.getTransactionType(),
                 saved.getCreatedAt()
         );
+    }
+
+    public List<TransactionResponseDTO> getAllTransactionsOfUser(){
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        Portfolio portfolio = portfolioRepository.findByUsername(currentUsername)
+                .orElseThrow(()-> new PortfolioNotFoundException("Este usuario no contiene portfolio"));
+
+        List<TransactionResponseDTO> responses = new ArrayList<>();
+        List<Transaction> transactions = transactionRepository.findAllByPortfolio(portfolio);
+        for (Transaction transaction : transactions){
+            TransactionResponseDTO response = new TransactionResponseDTO(
+                    transaction.getTransactionId(),
+                    transaction.getAsset().getTicker(),
+                    transaction.getQuantity(),
+                    transaction.getPrice(),
+                    transaction.getQuantity().multiply(transaction.getPrice()),
+                    transaction.getTransactionType(),
+                    transaction.getCreatedAt()
+            );
+            responses.add(response);
+        }
+        return responses;
     }
 }

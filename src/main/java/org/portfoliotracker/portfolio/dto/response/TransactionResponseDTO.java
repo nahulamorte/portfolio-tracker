@@ -12,9 +12,7 @@ import java.time.LocalDateTime;
 public record TransactionResponseDTO(
         Long transactionId, // For frontend
         String ticker,
-        @NotNull @Positive(message = "La cantidad debe ser mayor a cero")
         BigDecimal quantity,
-        @NotNull @Positive(message =  "El precio debe ser mayor a cero")
         BigDecimal price,
         BigDecimal totalPrice,//QUANTITY x PRICE
         @NotNull

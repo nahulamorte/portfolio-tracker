@@ -1,5 +1,6 @@
 package org.portfoliotracker.portfolio.repository;
 
+import org.portfoliotracker.portfolio.entity.Portfolio;
 import org.portfoliotracker.portfolio.entity.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -27,4 +28,6 @@ public interface TransactionRepository  extends JpaRepository<Transaction, Long>
       AND t.portfolio.portfolioId = :portfolioId
 """)
     BigDecimal getNetQuantity(@Param("assetId") Long assetId, @Param("portfolioId") Long portfolioId);
+
+    List<Transaction> findAllByPortfolio(Portfolio p);
 }
