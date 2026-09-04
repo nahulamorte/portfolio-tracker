@@ -2,6 +2,9 @@ package org.portfoliotracker.portfolio.service;
 
 import org.portfoliotracker.portfolio.dto.response.AssetResponseDTO;
 import org.portfoliotracker.portfolio.entity.Asset;
+import org.portfoliotracker.portfolio.entity.AssetType;
+import org.portfoliotracker.portfolio.exception.AssetNotFoundException;
+import org.portfoliotracker.portfolio.exception.AssetTypeRequiredException;
 import org.portfoliotracker.portfolio.exception.PortfolioNotFoundException;
 import org.portfoliotracker.portfolio.repository.AssetRepository;
 import org.springframework.stereotype.Service;
@@ -47,6 +50,22 @@ public class AssetService {
         return responses;
     }
 
+
+    public Asset findOrCreate(String ticker, AssetType assetType) {
+        return assetRepository.findByTicker(ticker)
+                .orElseGet(() -> {
+                    if (assetType == null) {
+                        throw new AssetTypeRequiredException(
+                                "El ticker '" + ticker + "' no existe. Especificá si es STOCK o CRYPTO para crearlo.");
+                    }
+                    Asset newAsset = Asset.builder()
+                            .ticker(ticker)
+                            .name(ticker)
+                            .assetType(assetType)
+                            .build();
+                    return assetRepository.save(newAsset);
+                });
+    }
 
 
 }

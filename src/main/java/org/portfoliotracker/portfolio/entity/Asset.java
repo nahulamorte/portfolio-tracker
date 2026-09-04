@@ -15,7 +15,7 @@ public class Asset {
     private String ticker;
     @Column(name = "asset_type")
     @Enumerated(EnumType.STRING)
-    private  assetType;
+    private AssetType assetType;
     @Column(name = "external_source")
     private String source;
     @Column(name = "created_at")

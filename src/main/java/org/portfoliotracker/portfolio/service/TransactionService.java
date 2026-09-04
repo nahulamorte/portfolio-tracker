@@ -22,26 +22,17 @@ import java.util.List;
 @Service
 public class TransactionService {
     private final TransactionRepository transactionRepository;
-    private final AssetRepository assetRepository;
+    private final AssetService assetService;
     private final PortfolioRepository portfolioRepository;
 
-    public TransactionService(TransactionRepository transactionRepository, AssetRepository assetRepository, PortfolioRepository portfolioRepository) {
+    public TransactionService(TransactionRepository transactionRepository, AssetService assetService, PortfolioRepository portfolioRepository) {
         this.transactionRepository = transactionRepository;
-        this.assetRepository = assetRepository;
+        this.assetService = assetService;
         this.portfolioRepository = portfolioRepository;
     }
 
     public TransactionResponseDTO createTransaction(TransactionRequestDTO request){
-        String ticker = request.ticker();
-        Asset asset = assetRepository.findByTicker(ticker)
-                .orElseGet(() -> {
-                    Asset newAsset = Asset.builder()
-                            .ticker(ticker)
-                            .name(ticker) // placeholder until Epic 3, when we validate against the external API
-                            .assetType("UNKNOWN") //Same as above, or ask for it in the request
-                            .build();
-                    return assetRepository.save(newAsset);
-                });
+        Asset asset = assetService.findOrCreate(request.ticker(), request.assetType());
 
         String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         Portfolio portfolio = portfolioRepository.findByUsername(currentUsername)
