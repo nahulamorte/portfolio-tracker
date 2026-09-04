@@ -153,5 +153,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, status);
     }
 
+    //Transaction:
+    @ExceptionHandler(InsufficientAssetQuantityException.class)
+    public ResponseEntity<ErrorResponseDTO> handleInsufficientAssetQuantity(InsufficientAssetQuantityException exc){
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                status.value(),
+                status.getReasonPhrase(),
+                exc.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(error, status);
+    }
+
 
 }
