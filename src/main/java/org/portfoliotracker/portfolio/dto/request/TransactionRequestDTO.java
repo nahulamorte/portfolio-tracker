@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.portfoliotracker.portfolio.entity.Asset;
+import org.portfoliotracker.portfolio.entity.AssetType;
 import org.portfoliotracker.portfolio.entity.TransactionType;
 
 import java.math.BigDecimal;
@@ -16,6 +17,7 @@ public record TransactionRequestDTO(
         @NotNull
         TransactionType transactionType,
         @NotBlank(message = "El ticker del activo es obligatorio")
-        String ticker
+        String ticker,
+        AssetType assetType
 ) {
 }
