@@ -40,7 +40,10 @@ public class TransactionService {
 
 
         if (request.transactionType() == TransactionType.SELL){
-            BigDecimal netQuantity = transactionRepository.getNetQuantity(asset.getAssetId(), portfolio.getPortfolioId());
+            BigDecimal netQuantity = transactionRepository.getNetQuantity(
+                    asset.getAssetId(), portfolio.getPortfolioId(),
+                    TransactionType.BUY, TransactionType.SELL
+            );
             if (request.quantity().compareTo(netQuantity) > 0) {
                 throw new InsufficientAssetQuantityException("No tenés suficiente cantidad para vender");
             }

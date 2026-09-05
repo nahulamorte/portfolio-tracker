@@ -2,6 +2,7 @@ package org.portfoliotracker.portfolio.repository;
 
 import org.portfoliotracker.portfolio.entity.Portfolio;
 import org.portfoliotracker.portfolio.entity.Transaction;
+import org.portfoliotracker.portfolio.entity.TransactionType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,14 +21,19 @@ public interface TransactionRepository  extends JpaRepository<Transaction, Long>
 
     @Query("""
     SELECT
-        COALESCE(SUM(CASE WHEN t.transactionType = 'BUY' THEN t.quantity ELSE 0 END), 0)
+        COALESCE(SUM(CASE WHEN t.transactionType = :buyType THEN t.quantity ELSE 0 END), 0)
         -
-        COALESCE(SUM(CASE WHEN t.transactionType = 'SELL' THEN t.quantity ELSE 0 END), 0)
+        COALESCE(SUM(CASE WHEN t.transactionType = :sellType THEN t.quantity ELSE 0 END), 0)
     FROM Transaction t
     WHERE t.asset.assetId = :assetId
       AND t.portfolio.portfolioId = :portfolioId
 """)
-    BigDecimal getNetQuantity(@Param("assetId") Long assetId, @Param("portfolioId") Long portfolioId);
+    BigDecimal getNetQuantity(
+            @Param("assetId") Long assetId,
+            @Param("portfolioId") Long portfolioId,
+            @Param("buyType") TransactionType buyType,
+            @Param("sellType") TransactionType sellType
+    );
 
     List<Transaction> findAllByPortfolio(Portfolio p);
 }

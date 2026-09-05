@@ -7,6 +7,7 @@ import org.portfoliotracker.portfolio.auth.exception.EmailAlreadyExistsException
 import org.portfoliotracker.portfolio.auth.exception.UsernameAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -124,6 +125,16 @@ public class GlobalExceptionHandler {
                 errors.put(error.getField(), error.getDefaultMessage())
         );
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponseDTO> handleMalformedJson(HttpMessageNotReadableException exc) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                status.value(), status.getReasonPhrase(),
+                "El cuerpo de la petición contiene un valor inválido (revisá tipos de datos y enums)",
+                LocalDateTime.now());
+        return new ResponseEntity<>(error, status);
     }
 
     //Exception of entities
