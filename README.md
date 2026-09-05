@@ -114,7 +114,7 @@ Content-Type: application/json
 - Vender exactamente la cantidad disponible es un caso válido.
 - No se puede vender un activo que nunca se compró en el portfolio.
 
-> Documentación interactiva completa disponible vía Swagger en `/swagger-ui.html` *(pendiente de configurar)*.
+> Documentación interactiva completa disponible vía Swagger en http://localhost:8080/swagger-ui/index.html.
 
 ---
 
