@@ -33,3 +33,5 @@ build/
 .vscode/
 
 .gitignore   → target/, .env, *.log, .idea/
+.env
+*.env
